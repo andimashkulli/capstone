@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import Home from './routes/home/home'
+import {Route,Routes} from 'react-router-dom';
+import Navigation from './routes/navigation/navigation';
+import './index.scss'
+import Authentication from './routes/auth/authentication';
+// Outlet mundeson qe kur te fusim elemente mbrenda elementeve si children in parent, atehere outleti e ben qe ajo le te del mas /home/shop ne pjesen larte te web-faqes.
+
+import Shop from './routes/shop/shop';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+return(
+ 
+ <Routes>
+   <Route path="/" element={<Navigation/>}>
+      <Route index element={<Home/>}/>
+      <Route path='shop' element={<Shop/>}/>
+      <Route path='auth' element={<Authentication/>}/>
+   </Route>
+
+</Routes>
+
+);
 }
 
 export default App;
