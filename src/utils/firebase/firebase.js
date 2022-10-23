@@ -1,5 +1,14 @@
 import {initializeApp} from 'firebase/app'; //ky eshte konfigurimi i aplikacionit tane qe lidhet me firebase
-import { getFirestore, doc,getDoc,setDoc } from 'firebase/firestore'
+import { 
+getFirestore,
+doc,
+getDoc,setDoc,
+collection,
+writeBatch,
+query,
+getDocs, // All the things that we need to make a database in Firestore
+
+} from 'firebase/firestore'
 import {
     getAuth,
 signInWithRedirect,
@@ -33,6 +42,34 @@ const firebaseConfig = {
   export const signInWithGoogleRedirect = () => signInWithRedirect(auth,provider)
 
   export const db = getFirestore(); // merr databazen
+// KRIJIMI I COLLECTIONAVE DHE DOKUMENTEVE NE FIREBASE BEHET ME KETE KOD POSHTE
+export const addCollectionAndDocuments = async (collectionKey,objectsToAdd) => {
+
+  const collectionRef = collection(db,collectionKey)
+    //krijon dokumentin vet vetiu qe te paraqitet ne databazen tone firestore 
+const batch = writeBatch(db) 
+
+objectsToAdd.forEach((object) => {
+  const docRef = doc(collectionRef,object.title.toLowerCase())
+  batch.set(docRef,object)
+ 
+})
+await batch.commit();
+console.log("done");
+} 
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db,'categories');
+  const q = query(collectionRef);
+  const querySnapshot = await getDocs(q)
+   const categoryMap = querySnapshot.docs.reduce((acc,docSnapshot) => {
+    const {title,items} = docSnapshot.data();
+    acc[title.toLowerCase()] = items
+    return acc
+   },{})
+   return categoryMap;
+}
+
   export const createUserDocumentFromAuth = async (userAuth, additionalInformation={}) => {
    
     //mundeson krijimin e dokumentin te userit qe marrim prej authenticationit
